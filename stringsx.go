@@ -1,24 +1,24 @@
-// Copyright 2020 stringsx Author(https://github.com/yudeguang/stringsx). All Rights Reserved.
+// Copyright 2020 stringsx Author(https://github.com/yudeguang17/stringsx). All Rights Reserved.
 //
 // This Source Code Form is subject to the terms of the MIT License.
 // If a copy of the MIT was not distributed with this file,
-// You can obtain one at https://github.com/yudeguang/stringsx.
-//字符串处理包，对标准库字符串的补充
+// You can obtain one at https://github.com/yudeguang17/stringsx.
+// 字符串处理包，对标准库字符串的补充
 package stringsx
 
 import (
 	"fmt"
-	iox "github.com/yudeguang/iox"
+	"github.com/antlabs/strsim"
+	"github.com/antlabs/strsim/similarity"
+	iox "github.com/yudeguang17/iox"
 	"math/rand"
 	"strconv"
 	"strings"
 	"time"
 	"unicode"
-	"github.com/antlabs/strsim"
-	"github.com/antlabs/strsim/similarity"
 )
 
-//返回第一次出现sep之后的字串符
+// 返回第一次出现sep之后的字串符
 func After(s, sep string) string {
 	if s == "" || sep == "" {
 		return s
@@ -30,7 +30,7 @@ func After(s, sep string) string {
 	return s[pos+len(sep):]
 }
 
-//返回最后一次出现sep之后的字符串
+// 返回最后一次出现sep之后的字符串
 func AfterLast(s, sep string) string {
 	if sep == "" || s == "" {
 		return s
@@ -42,7 +42,7 @@ func AfterLast(s, sep string) string {
 	return s[pos+len(sep):]
 }
 
-//返回第N次出现sep之后的字符串
+// 返回第N次出现sep之后的字符串
 func AfterNSep(s, sep string, nTimes int) string {
 	if sep == "" || s == "" || nTimes <= 0 {
 		return s
@@ -55,7 +55,7 @@ func AfterNSep(s, sep string, nTimes int) string {
 	return s[pos+len(sep):]
 }
 
-//返回第一次出现sep之前的字符串
+// 返回第一次出现sep之前的字符串
 func Before(s, sep string) string {
 	if s == "" || sep == "" {
 		return s
@@ -67,7 +67,7 @@ func Before(s, sep string) string {
 	return s[:pos]
 }
 
-//返回最后一次出现sep之前的字符串
+// 返回最后一次出现sep之前的字符串
 func BeforeLast(s, sep string) string {
 	if sep == "" || s == "" {
 		return s
@@ -79,7 +79,7 @@ func BeforeLast(s, sep string) string {
 	return s[:pos]
 }
 
-//返回第N次出现sep之前的字符串
+// 返回第N次出现sep之前的字符串
 func BeforeNSep(s, sep string, nTimes int) string {
 	if sep == "" || s == "" || nTimes <= 0 {
 		return s
@@ -92,7 +92,7 @@ func BeforeNSep(s, sep string, nTimes int) string {
 	return s[:pos]
 }
 
-//返回第一次出现在两个字符串接之间的字符串
+// 返回第一次出现在两个字符串接之间的字符串
 func Between(s, begin, end string) string {
 	if s == "" || begin == "" || end == "" {
 		return ""
@@ -108,7 +108,7 @@ func Between(s, begin, end string) string {
 	return ""
 }
 
-//返回左侧N个字符
+// 返回左侧N个字符
 func Left(s string, n int) string {
 	if n <= 0 || s == "" {
 		return ""
@@ -120,7 +120,7 @@ func Left(s string, n int) string {
 	return string(runes[0:n])
 }
 
-//返回右侧N个字符
+// 返回右侧N个字符
 func Right(s string, n int) string {
 	if n <= 0 || s == "" {
 		return ""
@@ -132,7 +132,7 @@ func Right(s string, n int) string {
 	return string(runes[len(runes)-n:])
 }
 
-//用分隔符sep把若干个字符拼接在一起,实际为strings.Join的变体形式
+// 用分隔符sep把若干个字符拼接在一起,实际为strings.Join的变体形式
 func JoinStrings(sep string, args ...string) string {
 	return strings.Join(args, sep)
 }
@@ -228,7 +228,7 @@ func JoinInterface(sep string, elems ...interface{}) string {
 	return b.String()
 }
 
-//返回倒序字符串
+// 返回倒序字符串
 func Reverse(s string) string {
 	runes := []rune(s)
 	for from, to := 0, len(runes)-1; from < to; from, to = from+1, to-1 {
@@ -237,8 +237,8 @@ func Reverse(s string) string {
 	return string(runes)
 }
 
-//返回把中间字符按一定规则替换后的字符串接
-//CenterPad("hello", 10, "*") => "he*****llo"
+// 返回把中间字符按一定规则替换后的字符串接
+// CenterPad("hello", 10, "*") => "he*****llo"
 func CenterPad(s string, length int, pad string) string {
 	l := lenRune(s)
 	if length <= l {
@@ -260,7 +260,7 @@ func CenterPad(s string, length int, pad string) string {
 	}
 }
 
-//返回两侧字符按一定规则替换后的字符串接
+// 返回两侧字符按一定规则替换后的字符串接
 // LeftRightPad("hello", 4, " ")    => "hell"
 // LeftRightPad("hello", 10, " ")   => "  hello   "
 // LeftRightPad("hello", 10, "123") => "12hello123"
@@ -285,7 +285,7 @@ func LeftRightPad(s string, length int, pad string) string {
 	}
 }
 
-//返回字符串str，右面用字符串padstr填补直到str是len个字符长,此函数与mysql中RPAD()行为保持一致
+// 返回字符串str，右面用字符串padstr填补直到str是len个字符长,此函数与mysql中RPAD()行为保持一致
 // Rightpad("hello", 4, " ")    => "hello"
 // Rightpad("hello", 10, " ")   => "hello     "
 // Rightpad("hello", 10, "123") => "hello12312"
@@ -306,7 +306,7 @@ func Rightpad(s string, length int, pad string) string {
 	}
 }
 
-//返回字符串str，左面用字符串padstr填补直到str是len个字符长,,此函数与mysql中LPAD()行为保持一致
+// 返回字符串str，左面用字符串padstr填补直到str是len个字符长,,此函数与mysql中LPAD()行为保持一致
 // LeftPad("hello", 4, " ")    => "hello"
 // LeftPad("hello", 10, " ")   => "     hello"
 // LeftPad("hello", 10, "123") => "12312hello"
@@ -327,12 +327,12 @@ func LeftPad(s string, length int, pad string) string {
 	}
 }
 
-//返回s中的字符数
+// 返回s中的字符数
 func lenRune(s string) int {
 	return len([]rune(s))
 }
 
-//返回随机打乱后的字符串
+// 返回随机打乱后的字符串
 func Rand(s string) string {
 	if s == "" {
 		return s
@@ -349,7 +349,7 @@ func Rand(s string) string {
 
 const commaAndNumbersAndLetters = `,abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`
 
-//只保留数字和英文字母,删除其它类型字母及标点符号
+// 只保留数字和英文字母,删除其它类型字母及标点符号
 func NumbersLettersLeft(s string) string {
 	runes := []rune(s)
 	//注意，如果本身全部是数字及字母，那么就可以减少新的内存分配
@@ -372,7 +372,7 @@ func NumbersLettersLeft(s string) string {
 	return string(newRunes)
 }
 
-//只保留阿拉伯数字
+// 只保留阿拉伯数字
 func NumbersLeft(s string) string {
 	runes := []rune(s)
 	//注意，如果本身全部是数字及字母，那么就可以减少新的内存分配
@@ -395,7 +395,7 @@ func NumbersLeft(s string) string {
 	return string(newRunes)
 }
 
-//只保留英文字母
+// 只保留英文字母
 func LettersLeft(s string) string {
 	runes := []rune(s)
 	//注意，如果本身全部是数字及字母，那么就可以减少新的内存分配
@@ -418,7 +418,7 @@ func LettersLeft(s string) string {
 	return string(newRunes)
 }
 
-//保留输入的相关字符
+// 保留输入的相关字符
 func RelevantCharactersLeft(s, RelevantCharacter string) string {
 	runes := []rune(s)
 	newRunes := make([]rune, 0, len(runes))
@@ -430,7 +430,7 @@ func RelevantCharactersLeft(s, RelevantCharacter string) string {
 	return string(newRunes)
 }
 
-//只保留逗号以及数字和英文字母，因为逗号一般用于分隔文本
+// 只保留逗号以及数字和英文字母，因为逗号一般用于分隔文本
 func CommaNumbersLettersLeft(s string) string {
 	runes := []rune(s)
 	newRunes := make([]rune, 0, len(runes))
@@ -442,7 +442,7 @@ func CommaNumbersLettersLeft(s string) string {
 	return string(newRunes)
 }
 
-//移除字符串中的汉字
+// 移除字符串中的汉字
 func RemoveHan(s string) string {
 	runes := []rune(s)
 	var newRunes []rune
@@ -454,7 +454,7 @@ func RemoveHan(s string) string {
 	return string(newRunes)
 }
 
-//只保留字符串中的汉字
+// 只保留字符串中的汉字
 func HanLeft(s string) string {
 	runes := []rune(s)
 	var newRunes []rune
@@ -466,7 +466,7 @@ func HanLeft(s string) string {
 	return string(newRunes)
 }
 
-//按固定的长度拆分字符串
+// 按固定的长度拆分字符串
 func SplitByLen(s string, sepLen int) []string {
 	x := len(s) % sepLen //余数
 	y := len(s) / sepLen
@@ -492,12 +492,12 @@ func SplitByLen(s string, sepLen int) []string {
 	return ret
 }
 
-//判断单个rune是否是汉字
+// 判断单个rune是否是汉字
 func RuneIsHan(r rune) bool {
 	return unicode.Is(unicode.Han, r)
 }
 
-//判断rune是否包含汉字
+// 判断rune是否包含汉字
 func ContainsHan(s string) bool {
 	runes := []rune(s)
 	for _, r := range runes {
@@ -508,7 +508,7 @@ func ContainsHan(s string) bool {
 	return false
 }
 
-//判断字符串是否是由纯数字组成
+// 判断字符串是否是由纯数字组成
 func IsNumber(s string) bool {
 	runes := []rune(s)
 	for _, r := range runes {
@@ -519,7 +519,7 @@ func IsNumber(s string) bool {
 	return true
 }
 
-//判断字符串是否是由纯字母组成
+// 判断字符串是否是由纯字母组成
 func IsLetter(s string) bool {
 	runes := []rune(s)
 	for _, r := range runes {
@@ -530,7 +530,7 @@ func IsLetter(s string) bool {
 	return true
 }
 
-//判断是否是大写字母
+// 判断是否是大写字母
 func IsLetterUpper(b byte) bool {
 	if b >= byte('A') && b <= byte('Z') {
 		return true
@@ -538,7 +538,7 @@ func IsLetterUpper(b byte) bool {
 	return false
 }
 
-//判断是否是小写字母
+// 判断是否是小写字母
 func IsLetterLower(b byte) bool {
 	if b >= byte('a') && b <= byte('z') {
 		return true
@@ -546,7 +546,7 @@ func IsLetterLower(b byte) bool {
 	return false
 }
 
-//HTML中，经常有换行符号，前后有空格等
+// HTML中，经常有换行符号，前后有空格等
 func FmtHTML(s string) string {
 	for {
 		if !strings.Contains(s, "\r\n") {
@@ -558,9 +558,9 @@ func FmtHTML(s string) string {
 	return strings.TrimSpace(s)
 }
 
-//返回最相似的一个字符串，前缀匹配优先 用于特定的项目 如果一点相似度都没有，则返回空
+// 返回最相似的一个字符串，前缀匹配优先 用于特定的项目 如果一点相似度都没有，则返回空
 func MostSimilar(a string, b []string) string {
-	if len(b)==0{
+	if len(b) == 0 {
 		return ""
 	}
 	var okID int
@@ -571,14 +571,14 @@ func MostSimilar(a string, b []string) string {
 			return a
 		}
 		//找出相同的 有相同前缀的，权重要增加
-		tempSame := sameStringWithoutSpace(a, b[i])+samePrefix(a,b[i])+samePrefix(a,b[i])
+		tempSame := sameStringWithoutSpace(a, b[i]) + samePrefix(a, b[i]) + samePrefix(a, b[i])
 		if len(tempSame) > len(same) {
 			okID = i
 			same = tempSame
 			find = true
-		}else if len(tempSame)==len(same){
+		} else if len(tempSame) == len(same) {
 			//如果相同的，那么取目标数据短的那一条
-			if len(strings.Replace(b[okID]," ","",-1 ) )>len(strings.Replace(b[i]," ","",-1)){
+			if len(strings.Replace(b[okID], " ", "", -1)) > len(strings.Replace(b[i], " ", "", -1)) {
 				okID = i
 				same = tempSame
 				find = true
@@ -591,40 +591,41 @@ func MostSimilar(a string, b []string) string {
 	//没有一个交集，则返回空
 	return ""
 }
-//返回经过筛选后的若干条数据，按近似程度从高到低排序
+
+// 返回经过筛选后的若干条数据，按近似程度从高到低排序
 func MostSimilars(a string, b []string) []string {
 	var result []string
-	lenOfb:=len(b)
-	for{
-		if len(b)==0||len(result)==lenOfb{
+	lenOfb := len(b)
+	for {
+		if len(b) == 0 || len(result) == lenOfb {
 			break
 		}
-		t:=MostSimilar(a,b)
-		result=append(result,t)
+		t := MostSimilar(a, b)
+		result = append(result, t)
 		var nb []string
-		for i:=range b{
-			if b[i]!=t{
-				nb=append(nb,b[i])
+		for i := range b {
+			if b[i] != t {
+				nb = append(nb, b[i])
 			}
 		}
-		b=nb
+		b = nb
 	}
 	var final []string
-	for i:=range result{
-		if result[i]!=""{
-			final=append(final,result[i])
+	for i := range result {
+		if result[i] != "" {
+			final = append(final, result[i])
 		}
 	}
 	return result
 }
 
-//去除空格括号等相同的前缀字符
-func samePrefix(a, b string) string{
+// 去除空格括号等相同的前缀字符
+func samePrefix(a, b string) string {
 	//先去除特殊字符
-	stopWords:=" ()（）"
-	for _,v:=range SplitByLen(stopWords,1){
-		a=strings.Replace(a,v,"",-1)
-		b=strings.Replace(b,v,"",-1)
+	stopWords := " ()（）"
+	for _, v := range SplitByLen(stopWords, 1) {
+		a = strings.Replace(a, v, "", -1)
+		b = strings.Replace(b, v, "", -1)
 	}
 	if len(a) == 0 || len(b) == 0 {
 		return ""
@@ -632,13 +633,13 @@ func samePrefix(a, b string) string{
 	var result []rune
 	ra := []rune(a)
 	rb := []rune(b)
-	maxi:=minInt(len(ra),len(rb))
+	maxi := minInt(len(ra), len(rb))
 
-	for i:=0;i<maxi;i++{
-		if ra[i]!=rb[i]{
+	for i := 0; i < maxi; i++ {
+		if ra[i] != rb[i] {
 			break
 		}
-		result=append(result,ra[i])
+		result = append(result, ra[i])
 	}
 	return string(result)
 }
@@ -652,6 +653,7 @@ func minInt(args ...int) int {
 	}
 	return min
 }
+
 // 去除空格后剩余相同的字符串
 var space = []rune(" ")[0]
 
@@ -670,13 +672,14 @@ func sameStringWithoutSpace(a, b string) string {
 			if ra[i] == rb[ii] {
 				result = append(result, ra[i])
 				rb[ii] = space
-				ra[i]=space
+				ra[i] = space
 			}
 		}
 	}
 	return string(result)
 }
-//返回相似度最高的那个字符串 并且带匹配度 此为通用算法
-func MostSimilarWithScore(a  string,b []string)*similarity.Match{
-	return strsim.FindBestMatchOne(a,b)
+
+// 返回相似度最高的那个字符串 并且带匹配度 此为通用算法
+func MostSimilarWithScore(a string, b []string) *similarity.Match {
+	return strsim.FindBestMatchOne(a, b)
 }
