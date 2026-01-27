@@ -16,6 +16,7 @@ import (
 	"strings"
 	"time"
 	"unicode"
+	"unicode/utf8"
 )
 
 // 返回第一次出现sep之后的字串符
@@ -108,7 +109,7 @@ func Between(s, begin, end string) string {
 	return ""
 }
 
-// 返回左侧N个字符
+/*
 func Left(s string, n int) string {
 	if n <= 0 || s == "" {
 		return ""
@@ -119,8 +120,44 @@ func Left(s string, n int) string {
 	}
 	return string(runes[0:n])
 }
+*/
+// 返回左侧N个字符
+func Left(s string, n int) string {
+	if n <= 0 {
+		return ""
+	}
+	var b strings.Builder
+	// 预分配最多 n 个 rune 的空间（每个 rune 最大 4 字节）
+	b.Grow(n * 4)
 
-// 返回右侧N个字符
+	count := 0
+	for _, r := range s {
+		if count >= n {
+			break
+		}
+		b.WriteRune(r) // 这里会自动处理无效 UTF-8，转为 �
+		count++
+	}
+	if count < n {
+		return s // 字符串长度不足 n，返回原字符串（保持原版本行为）
+	}
+	return b.String()
+}
+
+// 返回左侧N个字符 只有在输入字符串是UTF-8编码时才完全没问题
+func LeftUTF8(s string, n int) string {
+	if n <= 0 {
+		return ""
+	}
+	pos := 0
+	for i := 0; i < n && pos < len(s); i++ {
+		_, size := utf8.DecodeRuneInString(s[pos:])
+		pos += size
+	}
+	return s[:pos]
+}
+
+/*
 func Right(s string, n int) string {
 	if n <= 0 || s == "" {
 		return ""
@@ -130,6 +167,57 @@ func Right(s string, n int) string {
 		return s
 	}
 	return string(runes[len(runes)-n:])
+}
+*/
+// 返回右侧N个字符
+func Right(s string, n int) string {
+	if n <= 0 {
+		return ""
+	}
+	// 环形缓冲区：只保存最后 n 个 rune
+	buf := make([]rune, n)
+	idx := 0
+	total := 0
+
+	// 遍历一次：range 会自动将无效 UTF-8 转为 �
+	for _, r := range s {
+		buf[idx] = r
+		idx++
+		if idx == n {
+			idx = 0
+		}
+		total++
+	}
+	// 长度不足，返回原字符串（保留原始字节，包括可能的无效序列）
+	if total <= n {
+		return s
+	}
+	// 重建字符串
+	var b strings.Builder
+	b.Grow(n * 4) // UTF-8 最大 4 字节/rune
+
+	for i := 0; i < n; i++ {
+		b.WriteRune(buf[idx])
+		idx++
+		if idx == n {
+			idx = 0
+		}
+	}
+	return b.String()
+}
+
+// 返回右侧N个字符 仅在输入字符串是UTF-8编码时才完全没问题
+func RightUTF8(s string, n int) string {
+	if n <= 0 {
+		return ""
+	}
+	// 从字符串末尾向前解码 n 个 rune
+	pos := len(s)
+	for i := 0; i < n && pos > 0; i++ {
+		_, size := utf8.DecodeLastRuneInString(s[:pos])
+		pos -= size
+	}
+	return s[pos:]
 }
 
 // 用分隔符sep把若干个字符拼接在一起,实际为strings.Join的变体形式
