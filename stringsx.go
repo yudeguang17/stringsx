@@ -121,15 +121,15 @@ func Left(s string, n int) string {
 	return string(runes[0:n])
 }
 */
-// 返回左侧N个字符
+// 获取字符串左边的N个字符
+// 如果字符串长度不足N，则返回原字符串
 func Left(s string, n int) string {
-	if n <= 0 {
+	if s == "" || n <= 0 {
 		return ""
 	}
 	var b strings.Builder
 	// 预分配最多 n 个 rune 的空间（每个 rune 最大 4 字节）
 	b.Grow(n * 4)
-
 	count := 0
 	for _, r := range s {
 		if count >= n {
@@ -169,11 +169,14 @@ func Right(s string, n int) string {
 	return string(runes[len(runes)-n:])
 }
 */
-// 返回右侧N个字符
+
+// 获取字符串右边的N个字符
+// 如果字符串长度不足N，则返回原字符串
 func Right(s string, n int) string {
-	if n <= 0 {
+	if n <= 0 || s == "" {
 		return ""
 	}
+
 	// 环形缓冲区：只保存最后 n 个 rune
 	buf := make([]rune, n)
 	idx := 0
@@ -188,20 +191,22 @@ func Right(s string, n int) string {
 		}
 		total++
 	}
+
 	// 长度不足，返回原字符串（保留原始字节，包括可能的无效序列）
 	if total <= n {
 		return s
 	}
-	// 重建字符串
+
+	// 重建字符串 - 修正后的环形缓冲区读取逻辑
 	var b strings.Builder
 	b.Grow(n * 4) // UTF-8 最大 4 字节/rune
 
+	// 计算起始位置：从最后一个插入位置的前一个位置开始向前读取
+	start := idx
 	for i := 0; i < n; i++ {
-		b.WriteRune(buf[idx])
-		idx++
-		if idx == n {
-			idx = 0
-		}
+		// 从 start 开始向前读取 n 个字符
+		pos := (start - n + i + n) % n
+		b.WriteRune(buf[pos])
 	}
 	return b.String()
 }
